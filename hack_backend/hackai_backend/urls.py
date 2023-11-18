@@ -15,21 +15,39 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from Map import views as Map
-from Cam import views as Cam
-from Tests import views as Tests
-from Test import views as Test
+from django.urls import path, include
+from Map.views import MatList, MatViewSet
+from Cam.views import Cam, CamViewSet
+from Tests.views import Tests, TestsListViewSet
+from Test.views import Test, TestListViewSet
+from django.http import HttpResponse
+from rest_framework import routers
+urlpatterns = [
+    # ... other paths ...
+    path('mat/', MatList.as_view()),
+    path('cam/', Cam),
+    path('tests/', Tests),
+    path('test/', Test),
+]
+
+from django.shortcuts import render
 from django.http import HttpResponse
 
+router = routers.DefaultRouter()
+router.register(r'Map', MatViewSet, basename='Map')
+router.register(r'Test', TestListViewSet, basename='Test')
+router.register(r'Cam', CamViewSet, basename='Cam')
+router.register(r'Tests', TestsListViewSet, basename='Tests')
+
 def home_view(request):
-    return HttpResponse("Welcome to the HackAI Backend!")
+    return render(request, 'home.html')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('mat/', Map.MatList.as_view()),
-    path('cam/', Cam.CamList.as_view()),
-    path('tests/', Tests.TestsList.as_view()),
-    path('test/', Test.TestList.as_view()),
+    path('api/', include(router.urls)),
+    path('mat/', MatList.as_view()),
+    path('cam/', Cam),
+    path('tests/', Tests),
+    path('test/', Test),
     path('', home_view),
 ]
