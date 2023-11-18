@@ -1,0 +1,31 @@
+# Python virtual environment
+env/
+
+# Compiled Python files
+*.pyc
+
+# SQLite database file
+db.sqlite3
+
+# Django __pycache__ directories
+__pycache__/
+
+# Local settings file
+*/settings_local.py
+
+# If you're using a virtualenv, you might also want to exclude the virtualenv folder, e.g., 'venv/'
+venv/
+
+# Other common files to exclude:
+
+# macOS system files
+.DS_Store
+
+# Log files
+*.log
+
+# Backup files
+*~
+
+# If using Jupyter Notebooks
+.ipynb_checkpoints/
