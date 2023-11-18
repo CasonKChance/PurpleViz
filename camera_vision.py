@@ -1,5 +1,4 @@
 import cv2
-print(cv2.__version__)
 import numpy as np
 
 cap = cv2.VideoCapture(0)
@@ -17,7 +16,7 @@ while True:
     _, thresh = cv2.threshold(gray, 65, 255, cv2.THRESH_BINARY)
     kernel = np.ones((morph, morph),np.uint8)
     thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
-    _, contours, _ = cv2.findContours(thresh, True, cv2.RETR_TREE) #change this to 'contours,_' for opencv2
+    contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.RETR_TREE) #change this to 'contours,_' for opencv2
     text = '# of particles: ' + str(len(contours))
     bg = np.zeros_like(img)
     cv2.putText(bg, text, (50,200), font, 1.72, (0,255,244), 3, cv2.LINE_AA)
