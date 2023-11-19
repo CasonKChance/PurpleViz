@@ -4,38 +4,53 @@ import axios from 'axios';
 function CameraComponent() {
   const videoRef = useRef(null);
   const photoRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const [hasPhoto, setHasPhoto] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState(null); // Added this line
+  const [dustPredictions, setDustPredictions] = useState(0);
+
 
   useEffect(() => {
     getVideo();
     updateVideoDimensions();
-  
+
     window.addEventListener('resize', updateVideoDimensions);
-  
+
     return () => {
       window.removeEventListener('resize', updateVideoDimensions);
       // ... existing cleanup code ...
     };
   }, []);
 
-  
-  
+
+
   const updateVideoDimensions = () => {
     const video = videoRef.current;
     if (video) {
       // Adjust padding as needed
       const horizontalPadding = 80;
-      const width = window.innerWidth - horizontalPadding; 
-      const height = window.innerHeight * 0.75; 
+      const width = window.innerWidth - horizontalPadding;
+      const height = window.innerHeight * 0.75;
       video.style.width = `${width}px`;
       video.style.height = `${height}px`;
     }
   };
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   useEffect(() => {
     getVideo();
-  
+
     // Cleanup function
     return () => {
       const video = videoRef.current;
@@ -46,7 +61,7 @@ function CameraComponent() {
     };
   }, []); // 
 
-  
+
   const getVideo = () => {
     const video = videoRef.current;
     if (video && video.srcObject) {
@@ -93,38 +108,50 @@ function CameraComponent() {
   const AnalyzePhoto = () => {
     if (photoRef.current) {
       const base64Image = photoRef.current.toDataURL('image/jpeg').split(',')[1];
-    
+      //const examplePredictions = predictions;
+      //setPredictions(examplePredictions);
+
       // Axios POST request to Roboflow
       axios({
         method: "POST",
         url: "https://detect.roboflow.com/purpleviz/3",
         params: {
-            api_key: "Z1Kv98CZjV9KVqS7kkpf",
-            confidence: 1,
+          api_key: "Z1Kv98CZjV9KVqS7kkpf"
         },
         data: base64Image,
         headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
+          "Content-Type": "application/x-www-form-urlencoded"
         }
       })
-      .then(function(response) {
-        console.log(response.data);
-        // Process the response here
-      })
-      .catch(function(error) {
-        console.error(error.message);
-      });
+        .then(function (response) {
+          console.log(response.data);
+          let predictionLength = response.data.predictions.length;
+          setDustPredictions(predictionLength);
+          //console.log(predictionLength);
+          // Process the response here
+        })
+        .catch(function (error) {
+          console.error(error.message);
+        });
     }
   };
-  
-  
 
+
+
+  // const closePhoto = () => {
+  //   let photo = photoRef.current;
+  //   let ctx = photo.getContext('2d');
+
+  //   ctx.clearRect(0, 0, photo.width, photo.height);
+  //   setHasPhoto(false);
+  // };
   const closePhoto = () => {
     let photo = photoRef.current;
     let ctx = photo.getContext('2d');
 
     ctx.clearRect(0, 0, photo.width, photo.height);
     setHasPhoto(false);
+    setUploadedImage(null);
   };
 
   return (
@@ -136,10 +163,15 @@ function CameraComponent() {
       <div className={'result ' + (hasPhoto ? 'hasPhoto' : '')}>
         <canvas ref={photoRef}></canvas>
         {hasPhoto && <> <button onClick={AnalyzePhoto}>CONFIRM</button>
-            <button onClick={closePhoto}>CLOSE</button></> }
+          <button onClick={closePhoto}>CLOSE</button></>}
+        {( hasPhoto && <>
+          <span>{`Number of Dust Particle Prediction: ${dustPredictions}`}</span>
+          </>
+        )}
       </div>
     </div>
   );
 }
+
 
 export default CameraComponent;
