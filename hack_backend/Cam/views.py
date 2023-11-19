@@ -5,10 +5,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Cam
 from .serializers import CamSerializer
-
+from rest_framework import viewsets
 
 # Create your views here.
-    
+class CamViewSet(viewsets.ModelViewSet):
+    queryset = Cam.objects.all()
+    serializer_class = CamSerializer
+
 class CamList(APIView):
     def get(self, request, format=None):
         cam = Cam.objects.all()
