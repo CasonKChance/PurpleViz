@@ -99,7 +99,8 @@ function CameraComponent() {
         method: "POST",
         url: "https://detect.roboflow.com/purpleviz/3",
         params: {
-            api_key: "Z1Kv98CZjV9KVqS7kkpf"
+            api_key: "Z1Kv98CZjV9KVqS7kkpf",
+            confidence: 1,
         },
         data: base64Image,
         headers: {
