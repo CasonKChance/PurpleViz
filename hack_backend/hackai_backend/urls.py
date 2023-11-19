@@ -16,15 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from Map.views import MatList, MatViewSet
 from Cam.views import Cam, CamViewSet
 from Tests.views import Tests, TestsListViewSet
 from Test.views import Test, TestListViewSet
 from django.http import HttpResponse
 from rest_framework import routers
+
 urlpatterns = [
     # ... other paths ...
-    path('mat/', MatList.as_view()),
     path('cam/', Cam),
     path('tests/', Tests),
     path('test/', Test),
@@ -34,7 +33,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 router = routers.DefaultRouter()
-router.register(r'Map', MatViewSet, basename='Map')
+
 router.register(r'Test', TestListViewSet, basename='Test')
 router.register(r'Cam', CamViewSet, basename='Cam')
 router.register(r'Tests', TestsListViewSet, basename='Tests')
@@ -45,7 +44,6 @@ def home_view(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('mat/', MatList.as_view()),
     path('cam/', Cam),
     path('tests/', Tests),
     path('test/', Test),
