@@ -4,4 +4,4 @@ from .models import Test
 class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Test
-        fields = ['id', 'testID', 'toleranceLevel']
+        fields = ['id', 'toleranceLevel']

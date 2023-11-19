@@ -5,11 +5,16 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Tests
 from .serializers import TestsSerializer
-
+from rest_framework import viewsets
 
 # Create your views here.
     
+class TestsListViewSet(viewsets.ModelViewSet):
+        queryset = Tests.objects.all()
+        serializer_class = TestsSerializer
+
 class TestsList(APIView):
+    
     def get(self, request, format=None):
         tests = Tests.objects.all()
         serializer = TestsSerializer(tests, many=True)
