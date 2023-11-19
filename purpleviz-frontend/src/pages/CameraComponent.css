@@ -1,0 +1,4 @@
+video {
+    object-fit: cover; /* This will ensure the video covers the full area, might crop a bit */
+    padding: 10px; /* Adjust padding as per your design */
+  }
